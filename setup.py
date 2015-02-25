@@ -25,6 +25,7 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
     long_description=README,
+    description='The mayo on your unicode sandwich',
     url='https://github.com/eyalr/unicode_mayo',
     license='MIT',
     packages=find_packages('src'),
