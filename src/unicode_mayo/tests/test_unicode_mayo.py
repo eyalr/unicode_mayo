@@ -7,6 +7,7 @@ class TestUnicodeSafetyWrapper(object):
         wrapped.encode('utf-8')
         unicode(wrapped)
         repr(wrapped)
+        ','.join((wrapped, u'5'))
 
     def test_unicode_wrong_operations(self):
         wrapped = UnicodeSafetyWrapper(u'unicode')

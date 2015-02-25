@@ -22,59 +22,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-class UnicodeSafetyWrapper(object):
+class UnicodeSafetyWrapper(unicode):
     """Wrap unicodes strings and will blow up if it encounters bytestrings"""
-
-    __slots__ = ('real_string',)
 
     def __init__(self, real_string):
         if isinstance(real_string, bytes):
             raise TypeError('Only unicode is supported')
-        self.real_string = real_string
-
-    def __unicode__(self):
-        return unicode(self.real_string)
+        super(UnicodeSafetyWrapper, self).__init__(self, real_string)
 
     def __str__(self):
         raise TypeError('Attempted to call str() on a unicode string')
 
     def __repr__(self):
         return '<class UnicodeSafetyWrapper on top of %s>' % (
-            repr(self.real_string),
+            super(UnicodeSafetyWrapper, self).__repr__(),
         )
 
     def __mod__(self, other):
         _fail_on_bytes(other)
 
-        return self.real_string % other
+        return super(UnicodeSafetyWrapper, self).__mod__(other)
 
     def format(self, *args, **kwargs):
         _fail_on_bytes(args)
         _fail_on_bytes(kwargs)
 
-        return self.real_string.format(*args, **kwargs)
+        return super(UnicodeSafetyWrapper, self).format(*args, **kwargs)
 
     def __add__(self, other):
         _fail_on_bytes(other)
 
-        return self.real_string + other
+        return super(UnicodeSafetyWrapper, self).__add__(other)
 
     def __radd__(self, other):
         _fail_on_bytes(other)
 
-        return other + self.real_string
+        return super(UnicodeSafetyWrapper, self).__radd__(other)
 
     def __iadd__(self, other):
         _fail_on_bytes(other)
 
-        self.real_string = self.real_string + other
-
-    def encode(self, *args):
-        return self.real_string.encode(*args)
+        super(UnicodeSafetyWrapper, self).__iadd__(other)
 
     def decode(self, *args):
         raise TypeError('Attempted to call decode() on a unicode string')
-        return self.real_string.decode(*args)
+        return super(UnicodeSafetyWrapper, self).decode(*args)
 
 
 def _fail_on_bytes(other):
