@@ -25,6 +25,8 @@ SOFTWARE.
 class UnicodeSafetyWrapper(object):
     """Wrap unicodes strings and will blow up if it encounters bytestrings"""
 
+    __slots__ = ('real_string',)
+
     def __init__(self, real_string):
         if isinstance(real_string, bytes):
             raise TypeError('Only unicode is supported')
