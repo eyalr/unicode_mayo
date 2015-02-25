@@ -48,10 +48,11 @@ class UnicodeSafetyWrapper(object):
 
         return self.real_string % other
 
-    def format(self, other):
-        _fail_on_bytes(other)
+    def format(self, *args, **kwargs):
+        _fail_on_bytes(args)
+        _fail_on_bytes(kwargs)
 
-        return self.real_string.format(other)
+        return self.real_string.format(*args, **kwargs)
 
     def __add__(self, other):
         _fail_on_bytes(other)

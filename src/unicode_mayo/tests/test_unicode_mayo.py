@@ -34,6 +34,11 @@ class TestUnicodeSafetyWrapper(object):
         if not wrapped.format(u'testing') == u'wrapped testing':
             assert('broken!')
 
+        wrapped = UnicodeSafetyWrapper(u'unicode {test}')
+
+        if not wrapped.format(test=u'testing') == u'wrapped testing':
+            assert('broken!')
+
     def test_unicode_formatting_bytes_broken(self):
         wrapped = UnicodeSafetyWrapper(u'unicode {}')
 
