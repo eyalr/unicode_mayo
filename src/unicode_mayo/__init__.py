@@ -52,17 +52,17 @@ class UnicodeSafetyWrapper(unicode):
     def __add__(self, other):
         _fail_on_bytes(other)
 
-        return super(UnicodeSafetyWrapper, self).__add__(other)
+        return UnicodeSafetyWrapper(unicode(self) + other)
 
     def __radd__(self, other):
         _fail_on_bytes(other)
 
-        return super(UnicodeSafetyWrapper, self).__radd__(other)
+        return UnicodeSafetyWrapper(other + unicode(self))
 
     def __iadd__(self, other):
         _fail_on_bytes(other)
 
-        super(UnicodeSafetyWrapper, self).__iadd__(other)
+        return UnicodeSafetyWrapper(self + other)
 
     def decode(self, *args):
         raise TypeError('Attempted to call decode() on a unicode string')

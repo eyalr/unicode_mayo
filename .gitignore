@@ -1,0 +1,4 @@
+*.pyc
+build/
+dist/
+src/unicode_mayo.egg-info/

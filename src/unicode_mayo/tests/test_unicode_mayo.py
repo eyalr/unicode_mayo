@@ -8,6 +8,9 @@ class TestUnicodeSafetyWrapper(object):
         unicode(wrapped)
         repr(wrapped)
         ','.join((wrapped, u'5'))
+        wrapped += u'5'
+        assert(isinstance(wrapped, UnicodeSafetyWrapper))
+        assert(isinstance(u'5' + wrapped, UnicodeSafetyWrapper))
 
     def test_unicode_wrong_operations(self):
         wrapped = UnicodeSafetyWrapper(u'unicode')
