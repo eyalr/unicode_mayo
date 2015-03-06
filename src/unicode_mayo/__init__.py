@@ -39,28 +39,28 @@ class UnicodeSafetyWrapper(unicode):
         )
 
     def __mod__(self, other):
-        _fail_on_other_type(other, str)
+        _fail_on_other_type(other)
 
         return super(UnicodeSafetyWrapper, self).__mod__(other)
 
     def format(self, *args, **kwargs):
-        _fail_on_other_type(args, str)
-        _fail_on_other_type(kwargs, str)
+        _fail_on_other_type(args)
+        _fail_on_other_type(kwargs)
 
         return super(UnicodeSafetyWrapper, self).format(*args, **kwargs)
 
     def __add__(self, other):
-        _fail_on_other_type(other, str)
+        _fail_on_other_type(other)
 
         return UnicodeSafetyWrapper(unicode(self) + other)
 
     def __radd__(self, other):
-        _fail_on_other_type(other, str)
+        _fail_on_other_type(other)
 
         return UnicodeSafetyWrapper(other + unicode(self))
 
     def __iadd__(self, other):
-        _fail_on_other_type(other, str)
+        _fail_on_other_type(other)
 
         return UnicodeSafetyWrapper(self + other)
 
@@ -86,28 +86,28 @@ class BytestringSafetyWrapper(str):
         )
 
     def __mod__(self, other):
-        _fail_on_other_type(other, unicode)
+        _fail_on_other_type(other, good=str, bad=unicode)
 
         return super(BytestringSafetyWrapper, self).__mod__(other)
 
     def format(self, *args, **kwargs):
-        _fail_on_other_type(args, unicode)
-        _fail_on_other_type(kwargs, unicode)
+        _fail_on_other_type(args, good=str, bad=unicode)
+        _fail_on_other_type(kwargs, good=str, bad=unicode)
 
         return super(BytestringSafetyWrapper, self).format(*args, **kwargs)
 
     def __add__(self, other):
-        _fail_on_other_type(other, unicode)
+        _fail_on_other_type(other, good=str, bad=unicode)
 
         return BytestringSafetyWrapper(str(self) + other)
 
     def __radd__(self, other):
-        _fail_on_other_type(other, unicode)
+        _fail_on_other_type(other, good=str, bad=unicode)
 
         return BytestringSafetyWrapper(other + str(self))
 
     def __iadd__(self, other):
-        _fail_on_other_type(other, unicode)
+        _fail_on_other_type(other, good=str, bad=unicode)
 
         return BytestringSafetyWrapper(self + other)
 
@@ -116,11 +116,14 @@ class BytestringSafetyWrapper(str):
         return super(BytestringSafetyWrapper, self).encode(*args)
 
 
-def _fail_on_other_type(other, failure_type):
-    def _fail_on_other_type_helper(possibly_bytes):
-        if isinstance(possibly_bytes, failure_type):
+def _fail_on_other_type(other, good=unicode, bad=bytes):
+    def _fail_on_other_type_helper(possibly_bad):
+        if isinstance(possibly_bad, bad):
             raise TypeError(
-                'Attempted string formatting without decoding utf-8'
+                'Attempted operation on {good_type} with the wrong string type: {bad_type}'.format(
+                    good_type=good.__name__,
+                    bad_type=bad.__name__,
+                )
             )
     if isinstance(other, dict):
         for val in other.itervalues():
