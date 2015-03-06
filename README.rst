@@ -3,9 +3,16 @@ unicode_mayo
 ============
 
 **unicode_mayo** is the mayo in your unicode sandwich. In your development
-environment, use it as a wrapper around unicode strings to see if they're
-accidentally coming in to contact with byte strings. This can help catch
-unicode encode/decode errors before they happen in production!
+environment, use it as a wrapper around unicode and byte strings to see if
+they're accidentally coming in to contact with byte strings. This can help
+catch unicode encode/decode errors before they happen in production!
+
+**unicode_mayo** includes two classes: ``UnicodeSafetyWrapper`` and
+``BytestringSafetyWrapper``. The former is meant to envelope unicode strings,
+and warns when they come into contact with byte strings; the latter is meant
+for byte strings, and warns when it comes into contact with unicode. Place
+these in strategic places (likely in development environments only), like
+``gettext()`` or all strings from your database.
 
 Installation
 ============
