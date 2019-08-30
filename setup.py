@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
-VERSION = '1.0.1'
+VERSION = '1.1.0'
 
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist bdist_wheel upload')
