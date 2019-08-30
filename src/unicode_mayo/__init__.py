@@ -34,33 +34,33 @@ class UnicodeSafetyWrapper(unicode):
         raise TypeError('Attempted to call str() on a unicode string')
 
     def __repr__(self):
-        return '<class UnicodeSafetyWrapper on top of %s>' % (
+        return '<%s with UnicodeSafetyWrapper>' % (
             super(UnicodeSafetyWrapper, self).__repr__(),
         )
 
     def __mod__(self, other):
-        _fail_on_other_type(other)
+        _fail_on_other_type(self, other)
 
         return super(UnicodeSafetyWrapper, self).__mod__(other)
 
     def format(self, *args, **kwargs):
-        _fail_on_other_type(args)
-        _fail_on_other_type(kwargs)
+        _fail_on_other_type(self, args)
+        _fail_on_other_type(self, kwargs)
 
         return super(UnicodeSafetyWrapper, self).format(*args, **kwargs)
 
     def __add__(self, other):
-        _fail_on_other_type(other)
+        _fail_on_other_type(self, other)
 
         return UnicodeSafetyWrapper(unicode(self) + other)
 
     def __radd__(self, other):
-        _fail_on_other_type(other)
+        _fail_on_other_type(self, other)
 
         return UnicodeSafetyWrapper(other + unicode(self))
 
     def __iadd__(self, other):
-        _fail_on_other_type(other)
+        _fail_on_other_type(self, other)
 
         return UnicodeSafetyWrapper(self + other)
 
@@ -81,33 +81,33 @@ class BytestringSafetyWrapper(str):
         raise TypeError('Attempted to call unicode() on a byte string')
 
     def __repr__(self):
-        return '<class BytestringSafetyWrapper on top of %s>' % (
+        return '<%s with BytestringSafetyWrapper>' % (
             super(BytestringSafetyWrapper, self).__repr__(),
         )
 
     def __mod__(self, other):
-        _fail_on_other_type(other, good=str, bad=unicode)
+        _fail_on_other_type(self, other, good=str, bad=unicode)
 
         return super(BytestringSafetyWrapper, self).__mod__(other)
 
     def format(self, *args, **kwargs):
-        _fail_on_other_type(args, good=str, bad=unicode)
-        _fail_on_other_type(kwargs, good=str, bad=unicode)
+        _fail_on_other_type(self, args, good=str, bad=unicode)
+        _fail_on_other_type(self, kwargs, good=str, bad=unicode)
 
         return super(BytestringSafetyWrapper, self).format(*args, **kwargs)
 
     def __add__(self, other):
-        _fail_on_other_type(other, good=str, bad=unicode)
+        _fail_on_other_type(self, other, good=str, bad=unicode)
 
         return BytestringSafetyWrapper(str(self) + other)
 
     def __radd__(self, other):
-        _fail_on_other_type(other, good=str, bad=unicode)
+        _fail_on_other_type(self, other, good=str, bad=unicode)
 
         return BytestringSafetyWrapper(other + str(self))
 
     def __iadd__(self, other):
-        _fail_on_other_type(other, good=str, bad=unicode)
+        _fail_on_other_type(self, other, good=str, bad=unicode)
 
         return BytestringSafetyWrapper(self + other)
 
@@ -116,13 +116,15 @@ class BytestringSafetyWrapper(str):
         return super(BytestringSafetyWrapper, self).encode(*args)
 
 
-def _fail_on_other_type(other, good=unicode, bad=bytes):
+def _fail_on_other_type(this, other, good=unicode, bad=bytes):
     def _fail_on_other_type_helper(possibly_bad):
         if isinstance(possibly_bad, bad):
             raise TypeError(
-                'Attempted operation on {good_type} with the wrong string type: {bad_type}'.format(
+                'Attempted string operation on {this} with {other} which has incorrect string type "{bad_type}".'.format(
+                    this=repr(this),
                     good_type=good.__name__,
                     bad_type=bad.__name__,
+                    other=repr(other),
                 )
             )
     if isinstance(other, dict):
